@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 import Cart from "./pages/Cart";
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
+import MyOrders from "./pages/MyOrders";
 
 function App() {
   return (
@@ -30,6 +31,8 @@ function App() {
         <Route path="/success" element={<Success />} />
 
         <Route path="/cancel" element={<Cancel />} />
+
+        <Route path="/my-orders" element={<MyOrders />} />
 
         <Route path="/seller-dashboard" element={<SellerDashboard />} />
       </Routes>

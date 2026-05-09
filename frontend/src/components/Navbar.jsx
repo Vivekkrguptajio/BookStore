@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaBookOpen, FaUserCircle, FaShoppingCart, FaSearch, FaMoon, FaSun } from "react-icons/fa";
+import { FaBookOpen, FaUserCircle, FaShoppingCart, FaSearch, FaMoon, FaSun, FaBox } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -92,6 +92,13 @@ function Navbar() {
             <li>
               <Link to="/books" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">Books</Link>
             </li>
+            {user && (
+              <li>
+                <Link to="/my-orders" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-2">
+                   Orders
+                </Link>
+              </li>
+            )}
             {user?.role === "seller" && (
               <li>
                 <Link to="/seller-dashboard" className="text-blue-600 dark:text-blue-400 font-semibold">Dashboard</Link>

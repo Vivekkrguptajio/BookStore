@@ -7,6 +7,7 @@ const {
   getSingleOrder,
   getAllOrders,
   updateOrderStatus,
+  deleteOrder,
 } = require("../controllers/order.controller");
 
 const authMiddleware = require("../middleware/auth.middleware");
@@ -37,5 +38,8 @@ router.put(
   roleMiddleware("admin"),
   updateOrderStatus,
 );
+
+// Delete Order
+router.delete("/:id", authMiddleware, deleteOrder);
 
 module.exports = router;

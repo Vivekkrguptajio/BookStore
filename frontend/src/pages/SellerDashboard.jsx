@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaBook, FaShoppingCart, FaRupeeSign, FaUsers } from "react-icons/fa";
+import { FaBook, FaShoppingCart, FaRupeeSign, FaUsers, FaTrash } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AddBook from "../components/AddBook";
@@ -53,24 +53,38 @@ function SellerDashboard() {
     setRefreshTrigger((prev) => prev + 1);
   };
 
+  const handleDeleteOrder = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this order?")) return;
+    try {
+      await axios.delete(`${API_URL}/orders/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert("Order deleted successfully");
+      handleRefresh();
+    } catch (error) {
+      console.error("Error deleting order:", error);
+      alert("Failed to delete order");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 pb-10">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-10 transition-colors duration-300">
       {/* Top Navbar */}
-      <div className="bg-white shadow-sm border-b px-8 py-5 flex items-center justify-between sticky top-0 z-10">
+      <div className="bg-white dark:bg-gray-900 shadow-sm border-b dark:border-gray-800 px-8 py-5 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
             <FaBook className="text-white text-xl" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">Seller Panel</h1>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Seller Panel</h1>
         </div>
 
         <div className="flex items-center gap-6">
-          <span className="text-gray-600 font-medium">
+          <span className="text-gray-600 dark:text-gray-400 font-medium">
             Welcome, {JSON.parse(localStorage.getItem("user"))?.name}
           </span>
           <button
             onClick={handleLogout}
-            className="bg-red-50 text-red-600 px-6 py-2 rounded-xl font-semibold hover:bg-red-600 hover:text-white transition-all border border-red-100"
+            className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-6 py-2 rounded-xl font-semibold hover:bg-red-600 hover:text-white transition-all border border-red-100 dark:border-red-900/30"
           >
             Logout
           </button>
@@ -82,59 +96,59 @@ function SellerDashboard() {
         {/* Cards */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Total Books */}
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition">
+          <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 font-medium">Total Books</p>
-                <h2 className="text-4xl font-bold mt-2 text-gray-800">{stats.totalBooks}</h2>
+                <p className="text-gray-500 dark:text-gray-400 font-medium">Total Books</p>
+                <h2 className="text-4xl font-bold mt-2 text-gray-800 dark:text-white">{stats.totalBooks}</h2>
               </div>
-              <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center">
+              <div className="w-14 h-14 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center">
                 <FaBook className="text-3xl text-blue-600" />
               </div>
             </div>
           </div>
 
           {/* Orders */}
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition">
+          <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 font-medium">Orders</p>
-                <h2 className="text-4xl font-bold mt-2 text-gray-800">{stats.totalOrders}</h2>
+                <p className="text-gray-500 dark:text-gray-400 font-medium">Orders</p>
+                <h2 className="text-4xl font-bold mt-2 text-gray-800 dark:text-white">{stats.totalOrders}</h2>
               </div>
-              <div className="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center">
+              <div className="w-14 h-14 bg-green-50 dark:bg-green-900/20 rounded-2xl flex items-center justify-center">
                 <FaShoppingCart className="text-3xl text-green-600" />
               </div>
             </div>
           </div>
 
           {/* Revenue */}
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition">
+          <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 font-medium">Revenue</p>
-                <h2 className="text-4xl font-bold mt-2 text-gray-800">₹{stats.totalRevenue}</h2>
+                <p className="text-gray-500 dark:text-gray-400 font-medium">Revenue</p>
+                <h2 className="text-4xl font-bold mt-2 text-gray-800 dark:text-white">₹{stats.totalRevenue}</h2>
               </div>
-              <div className="w-14 h-14 bg-yellow-50 rounded-2xl flex items-center justify-center">
+              <div className="w-14 h-14 bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl flex items-center justify-center">
                 <FaRupeeSign className="text-3xl text-yellow-500" />
               </div>
             </div>
           </div>
 
           {/* Customers */}
-          <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition">
+          <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-500 font-medium">Customers</p>
-                <h2 className="text-4xl font-bold mt-2 text-gray-800">{stats.totalCustomers}</h2>
+                <p className="text-gray-500 dark:text-gray-400 font-medium">Customers</p>
+                <h2 className="text-4xl font-bold mt-2 text-gray-800 dark:text-white">{stats.totalCustomers}</h2>
               </div>
-              <div className="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center">
+              <div className="w-14 h-14 bg-purple-50 dark:bg-purple-900/20 rounded-2xl flex items-center justify-center">
                 <FaUsers className="text-3xl text-purple-600" />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-10">
+        <div className="grid lg:grid-cols-3 gap-10 mt-10">
           <div className="lg:col-span-1">
             <AddBook onBookAdded={handleRefresh} />
           </div>
@@ -144,12 +158,12 @@ function SellerDashboard() {
         </div>
 
         {/* Recent Orders */}
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 mt-10 p-8">
+        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 mt-10 p-8">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-gray-800">Recent Orders</h2>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Recent Orders</h2>
             <button
               onClick={handleRefresh}
-              className="text-blue-600 font-semibold hover:underline"
+              className="text-blue-600 dark:text-blue-400 font-semibold hover:underline"
             >
               Refresh
             </button>
@@ -158,35 +172,36 @@ function SellerDashboard() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left border-b border-gray-100">
-                  <th className="pb-4 font-semibold text-gray-600">Order ID</th>
-                  <th className="pb-4 font-semibold text-gray-600">Customer</th>
-                  <th className="pb-4 font-semibold text-gray-600">Book</th>
-                  <th className="pb-4 font-semibold text-gray-600">Price</th>
-                  <th className="pb-4 font-semibold text-gray-600">Status</th>
+                <tr className="text-left border-b border-gray-100 dark:border-gray-800">
+                  <th className="pb-4 font-semibold text-gray-600 dark:text-gray-400">Order ID</th>
+                  <th className="pb-4 font-semibold text-gray-600 dark:text-gray-400">Customer</th>
+                  <th className="pb-4 font-semibold text-gray-600 dark:text-gray-400">Book</th>
+                  <th className="pb-4 font-semibold text-gray-600 dark:text-gray-400">Price</th>
+                  <th className="pb-4 font-semibold text-gray-600 dark:text-gray-400">Status</th>
+                  <th className="pb-4 font-semibold text-gray-600 dark:text-gray-400">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
                 {orders.length === 0 ? (
                   <tr>
-                    <td colSpan="5" className="py-10 text-center text-gray-500">
+                    <td colSpan="6" className="py-10 text-center text-gray-500">
                       No orders yet.
                     </td>
                   </tr>
                 ) : (
                   orders.map((order) => (
-                    <tr key={order._id} className="hover:bg-gray-50 transition-colors">
-                      <td className="py-4 font-mono text-sm text-gray-500">
+                    <tr key={order._id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                      <td className="py-4 font-mono text-sm text-gray-500 dark:text-gray-400">
                         #{order._id.substring(0, 8)}
                       </td>
                       <td className="py-4">
-                        <div className="font-semibold text-gray-800">{order.user?.name}</div>
+                        <div className="font-semibold text-gray-800 dark:text-white">{order.user?.name}</div>
                         <div className="text-xs text-gray-400">{order.user?.email}</div>
                       </td>
-                      <td className="py-4 text-gray-700">
+                      <td className="py-4 text-gray-700 dark:text-gray-300">
                         {order.orderItems.map((item) => item.book?.title).join(", ")}
                       </td>
-                      <td className="py-4 font-bold text-blue-600">₹{order.totalPrice}</td>
+                      <td className="py-4 font-bold text-blue-600 dark:text-blue-400">₹{order.totalPrice}</td>
                       <td className="py-4">
                         <span
                           className={`px-4 py-1 rounded-full text-xs font-bold uppercase ${
@@ -199,6 +214,14 @@ function SellerDashboard() {
                         >
                           {order.orderStatus}
                         </span>
+                      </td>
+                      <td className="py-4">
+                        <button 
+                          onClick={() => handleDeleteOrder(order._id)}
+                          className="text-red-400 hover:text-red-600 p-2 bg-red-50 dark:bg-red-900/20 rounded-xl transition"
+                        >
+                          <FaTrash size={16} />
+                        </button>
                       </td>
                     </tr>
                   ))
