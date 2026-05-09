@@ -6,6 +6,9 @@ import Login from "./pages/Login";
 import SellerDashboard from "./pages/SellerDashboard";
 import Books from "./pages/Books";
 import Signup from "./pages/Signup";
+import Cart from "./pages/Cart";
+import Success from "./pages/Success";
+import Cancel from "./pages/Cancel";
 
 function App() {
   return (
@@ -21,6 +24,12 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         <Route path="/books" element={<Books />} />
+
+        <Route path="/cart" element={<Cart />} />
+
+        <Route path="/success" element={<Success />} />
+
+        <Route path="/cancel" element={<Cancel />} />
 
         <Route path="/seller-dashboard" element={<SellerDashboard />} />
       </Routes>
