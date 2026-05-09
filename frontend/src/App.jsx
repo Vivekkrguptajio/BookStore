@@ -10,6 +10,8 @@ import Cart from "./pages/Cart";
 import Success from "./pages/Success";
 import Cancel from "./pages/Cancel";
 import MyOrders from "./pages/MyOrders";
+import AdminDashboard from "./pages/AdminDashboard";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -35,6 +37,10 @@ function App() {
         <Route path="/my-orders" element={<MyOrders />} />
 
         <Route path="/seller-dashboard" element={<SellerDashboard />} />
+
+        <Route path="/admin" element={<AdminDashboard />} />
+
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       
     </BrowserRouter>

@@ -1,5 +1,6 @@
 const Book = require("../models/Book");
 const Order = require("../models/Order");
+const User = require("../models/User");
 
 const getSellerStats = async (req, res) => {
   try {
@@ -45,6 +46,34 @@ const getSellerStats = async (req, res) => {
   }
 };
 
+const getAdminStats = async (req, res) => {
+  try {
+    const totalBooks = await Book.countDocuments();
+    const totalOrders = await Order.countDocuments();
+    const totalUsers = await User.countDocuments({ role: "user" });
+    const totalSellers = await User.countDocuments({ role: "seller" });
+    
+    const allOrders = await Order.find();
+    const totalRevenue = allOrders.reduce((acc, order) => acc + order.totalPrice, 0);
+
+    res.status(200).json({
+      success: true,
+      stats: {
+        totalBooks,
+        totalOrders,
+        totalUsers,
+        totalSellers,
+        totalRevenue,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   getSellerStats,
+  getAdminStats,
 };

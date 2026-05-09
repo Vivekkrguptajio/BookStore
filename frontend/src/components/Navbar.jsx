@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaBookOpen, FaUserCircle, FaShoppingCart, FaSearch, FaMoon, FaSun, FaBox } from "react-icons/fa";
+import { FaBookOpen, FaUserCircle, FaShoppingCart, FaSearch, FaMoon, FaSun, FaShieldAlt, FaUser } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -94,14 +94,19 @@ function Navbar() {
             </li>
             {user && (
               <li>
-                <Link to="/my-orders" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-2">
-                   Orders
-                </Link>
+                <Link to="/my-orders" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">Orders</Link>
               </li>
             )}
             {user?.role === "seller" && (
               <li>
                 <Link to="/seller-dashboard" className="text-blue-600 dark:text-blue-400 font-semibold">Dashboard</Link>
+              </li>
+            )}
+            {user?.role === "admin" && (
+              <li>
+                <Link to="/admin" className="text-purple-600 dark:text-purple-400 font-bold flex items-center gap-2">
+                   <FaShieldAlt /> Admin
+                </Link>
               </li>
             )}
           </ul>
@@ -127,10 +132,10 @@ function Navbar() {
 
             {user ? (
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-medium">
+                <Link to="/profile" className="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-medium hover:text-blue-600 transition">
                   <FaUserCircle className="text-2xl text-gray-400" />
                   <span className="hidden sm:inline">{user.name}</span>
-                </div>
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="px-5 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-600 hover:text-white transition border border-red-100 dark:border-red-900/30 font-semibold"

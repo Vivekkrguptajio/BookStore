@@ -6,6 +6,10 @@ const {
   registerUser,
   loginUser,
   getProfile,
+  getAllUsers,
+  deleteUser,
+  updateProfile,
+  deleteOwnProfile,
 } = require("../controllers/user.controller");
 
 const authMiddleware = require("../middleware/auth.middleware");
@@ -21,6 +25,12 @@ router.post("/login", loginUser);
 // Profile Protected Route
 router.get("/profile", authMiddleware, getProfile);
 
+// Update Profile
+router.put("/profile", authMiddleware, updateProfile);
+
+// Delete Own Profile
+router.delete("/profile", authMiddleware, deleteOwnProfile);
+
 router.get(
     "/seller-dashboard",
     authMiddleware,
@@ -34,17 +44,10 @@ router.get(
     }
 );
 
-router.get(
-    "/admin-dashboard",
-    authMiddleware,
-    roleMiddleware("admin"),
-    (req, res) => {
+// Admin: Get All Users
+router.get("/all", authMiddleware, roleMiddleware("admin"), getAllUsers);
 
-        res.json({
-            message: "Welcome Admin"
-        });
-
-    }
-);
+// Admin: Delete User
+router.delete("/:id", authMiddleware, roleMiddleware("admin"), deleteUser);
 
 module.exports = router;

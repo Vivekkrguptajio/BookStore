@@ -23,19 +23,18 @@ function Login() {
     try {
       const response = await axios.post(`${API_URL}/users/login`, formData);
       
-      console.log("Login Success:", response.data);
-      
-      // Store user and token in localStorage
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
       alert("Login Successful!");
 
       // Role based redirection
-      if (response.data.user.role === "seller") {
+      if (response.data.user.role === "admin") {
+        navigate("/admin");
+      } else if (response.data.user.role === "seller") {
         navigate("/seller-dashboard");
       } else {
-        navigate("/"); // Default user home
+        navigate("/"); 
       }
 
     } catch (error) {
@@ -47,40 +46,40 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-6 py-10">
-      <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center px-6 py-10 transition-colors duration-300">
+      <div className="bg-white dark:bg-gray-900 shadow-2xl rounded-3xl p-10 w-full max-w-md border dark:border-gray-800">
         
-        <h1 className="text-4xl font-bold text-center text-blue-600 mb-3">
+        <h1 className="text-4xl font-bold text-center text-blue-600 dark:text-blue-400 mb-3">
           Login
         </h1>
 
-        <p className="text-center text-gray-500 mb-8">
+        <p className="text-center text-gray-500 dark:text-gray-400 mb-8">
           Welcome back to BookStore
         </p>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
-            <label className="block mb-2 font-semibold">Email</label>
+            <label className="block mb-2 font-semibold dark:text-gray-200">Email</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
-              className="w-full border border-gray-300 rounded-xl px-5 py-3 outline-none focus:border-blue-600"
+              className="w-full border border-gray-300 dark:border-gray-700 bg-transparent dark:text-white rounded-xl px-5 py-3 outline-none focus:border-blue-600 dark:focus:border-blue-400 transition"
               required
             />
           </div>
 
           <div>
-            <label className="block mb-2 font-semibold">Password</label>
+            <label className="block mb-2 font-semibold dark:text-gray-200">Password</label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
               placeholder="Enter your password"
-              className="w-full border border-gray-300 rounded-xl px-5 py-3 outline-none focus:border-blue-600"
+              className="w-full border border-gray-300 dark:border-gray-700 bg-transparent dark:text-white rounded-xl px-5 py-3 outline-none focus:border-blue-600 dark:focus:border-blue-400 transition"
               required
             />
           </div>
@@ -88,15 +87,15 @@ function Login() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} text-white py-4 rounded-xl text-lg font-semibold transition`}
+            className={`w-full ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'} text-white py-4 rounded-xl text-lg font-semibold transition shadow-lg shadow-blue-100 dark:shadow-none`}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
-        <p className="text-center mt-6 text-gray-600">
+        <p className="text-center mt-6 text-gray-600 dark:text-gray-400">
           Don't have an account?
-          <Link to="/signup" className="text-blue-600 font-semibold ml-2 hover:underline">
+          <Link to="/signup" className="text-blue-600 dark:text-blue-400 font-semibold ml-2 hover:underline">
             Register
           </Link>
         </p>
