@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaBookOpen, FaUserCircle, FaShoppingCart, FaSearch, FaMoon, FaSun, FaShieldAlt, FaUser } from "react-icons/fa";
+import { FaBookOpen, FaUserCircle, FaShoppingCart, FaSearch, FaMoon, FaSun, FaShieldAlt, FaBars, FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -8,6 +8,7 @@ function Navbar() {
   const [cartCount, setCartCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [darkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
@@ -35,20 +36,15 @@ function Navbar() {
         console.error("Error fetching cart count:", error);
       }
     };
-
     fetchCart();
-    
     window.addEventListener("cart-updated", fetchCart);
-    window.addEventListener("storage", fetchCart);
-    return () => {
-      window.removeEventListener("cart-updated", fetchCart);
-      window.removeEventListener("storage", fetchCart);
-    };
+    return () => window.removeEventListener("cart-updated", fetchCart);
   }, [token]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    setIsMenuOpen(false);
     navigate("/login");
   };
 
@@ -57,111 +53,125 @@ function Navbar() {
     if (searchQuery.trim()) {
       navigate(`/books?search=${searchQuery.trim()}`);
       setSearchQuery("");
+      setIsMenuOpen(false);
     }
   };
 
   return (
-    <nav className="bg-white dark:bg-gray-900 shadow-sm border-b dark:border-gray-800 px-8 py-4 sticky top-0 z-50 transition-colors duration-300">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-8">
+    <nav className="bg-white dark:bg-gray-900 shadow-md border-b dark:border-gray-800 px-4 md:px-6 py-4 sticky top-0 z-50 transition-colors">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 shrink-0">
-          <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-            <FaBookOpen className="text-white text-xl" />
+          <div className="w-9 h-9 md:w-10 md:h-10 bg-blue-600 rounded-xl flex items-center justify-center">
+            <FaBookOpen className="text-white text-lg md:text-xl" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">BookStore</h1>
+          <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-white tracking-tight">BookStore</h1>
         </Link>
 
-        {/* Search Bar */}
-        <form onSubmit={handleSearch} className="flex-grow max-w-md relative hidden lg:block">
+        {/* Desktop Search Bar */}
+        <form onSubmit={handleSearch} className="flex-grow max-w-md relative hidden md:block">
           <input
             type="text"
             placeholder="Search books..."
-            className="w-full bg-gray-100 dark:bg-gray-800 dark:text-white border-none rounded-2xl py-3 pl-12 pr-4 outline-none focus:ring-2 focus:ring-blue-600 transition"
+            className="w-full bg-gray-100 dark:bg-gray-800 dark:text-white border border-transparent rounded-xl py-2 pl-11 pr-4 outline-none focus:ring-2 focus:ring-blue-600 transition"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
           <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
         </form>
 
-        {/* Menu & Buttons */}
-        <div className="flex items-center gap-8 shrink-0">
-          <ul className="hidden md:flex items-center gap-8 text-lg font-medium">
-            <li>
-              <Link to="/" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">Home</Link>
-            </li>
-            <li>
-              <Link to="/books" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">Books</Link>
-            </li>
-            {user && (
-              <li>
-                <Link to="/my-orders" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">Orders</Link>
-              </li>
-            )}
-            {user?.role === "seller" && (
-              <li>
-                <Link to="/seller-dashboard" className="text-blue-600 dark:text-blue-400 font-semibold">Dashboard</Link>
-              </li>
-            )}
-            {user?.role === "admin" && (
-              <li>
-                <Link to="/admin" className="text-purple-600 dark:text-purple-400 font-bold flex items-center gap-2">
-                   <FaShieldAlt /> Admin
-                </Link>
-              </li>
-            )}
+        {/* Right Section */}
+        <div className="flex items-center gap-2 md:gap-4">
+          {/* Desktop Menu */}
+          <ul className="hidden lg:flex items-center gap-6 font-semibold text-gray-600 dark:text-gray-300 mr-4">
+            <li><Link to="/" className="hover:text-blue-600 transition">Home</Link></li>
+            <li><Link to="/books" className="hover:text-blue-600 transition">Books</Link></li>
+            {user && <li><Link to="/my-orders" className="hover:text-blue-600 transition">Orders</Link></li>}
+            {user?.role === "seller" && <li><Link to="/seller-dashboard" className="text-blue-600 dark:text-blue-400">Dashboard</Link></li>}
           </ul>
 
-          <div className="flex items-center gap-6">
-            {/* Theme Toggle */}
-            <button 
-              onClick={() => setDarkMode(!darkMode)}
-              className="p-3 bg-gray-100 dark:bg-gray-800 rounded-xl text-gray-600 dark:text-yellow-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-            >
-              {darkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
-            </button>
+          <button onClick={() => setDarkMode(!darkMode)} className="p-2 md:p-2.5 bg-gray-100 dark:bg-gray-800 rounded-xl text-gray-600 dark:text-yellow-400">
+            {darkMode ? <FaSun size={18} /> : <FaMoon size={18} />}
+          </button>
 
-            {/* Cart Icon */}
-            <Link to="/cart" className="relative text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
-              <FaShoppingCart className="text-2xl" />
-              {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white dark:border-gray-900">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
+          <Link to="/cart" className="relative p-2 md:p-2.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition">
+            <FaShoppingCart className="text-xl md:text-2xl text-gray-600 dark:text-gray-300" />
+            {cartCount > 0 && (
+              <span className="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold w-4 h-4 md:w-5 md:h-5 flex items-center justify-center rounded-full">
+                {cartCount}
+              </span>
+            )}
+          </Link>
 
+          {/* Desktop User Section */}
+          <div className="hidden md:flex items-center gap-3 ml-2 border-l pl-4 dark:border-gray-800">
             {user ? (
-              <div className="flex items-center gap-4">
-                <Link to="/profile" className="flex items-center gap-2 text-gray-700 dark:text-gray-200 font-medium hover:text-blue-600 transition">
+              <>
+                <Link to="/profile" className="flex items-center gap-2 font-bold text-gray-700 dark:text-gray-200">
                   <FaUserCircle className="text-2xl text-gray-400" />
-                  <span className="hidden sm:inline">{user.name}</span>
+                  <span className="hidden sm:inline">{user.name.split(' ')[0]}</span>
                 </Link>
-                <button
-                  onClick={handleLogout}
-                  className="px-5 py-2 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-600 hover:text-white transition border border-red-100 dark:border-red-900/30 font-semibold"
-                >
-                  Logout
-                </button>
-              </div>
+                <button onClick={handleLogout} className="text-xs font-bold text-red-500 uppercase">Logout</button>
+              </>
             ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  to="/login"
-                  className="px-5 py-2 text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 transition"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/signup"
-                  className="px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md shadow-blue-100 dark:shadow-none transition font-semibold"
-                >
-                  Sign Up
-                </Link>
-              </div>
+              <Link to="/login" className="px-5 py-2 bg-blue-600 text-white rounded-xl font-bold">Login</Link>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="lg:hidden p-2 text-gray-600 dark:text-gray-300"
+          >
+            {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white dark:bg-gray-900 border-b dark:border-gray-800 p-6 space-y-6 shadow-xl transition-all">
+          {/* Mobile Search */}
+          <form onSubmit={handleSearch} className="relative">
+            <input
+              type="text"
+              placeholder="Search books..."
+              className="w-full bg-gray-100 dark:bg-gray-800 dark:text-white rounded-xl py-3 pl-11 pr-4 outline-none"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+          </form>
+
+          <ul className="space-y-4 font-bold text-lg text-gray-700 dark:text-gray-200">
+            <li><Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link></li>
+            <li><Link to="/books" onClick={() => setIsMenuOpen(false)}>Books</Link></li>
+            {user && <li><Link to="/my-orders" onClick={() => setIsMenuOpen(false)}>My Orders</Link></li>}
+            {user?.role === "seller" && <li><Link to="/seller-dashboard" onClick={() => setIsMenuOpen(false)} className="text-blue-600">Seller Dashboard</Link></li>}
+            {user?.role === "admin" && <li><Link to="/admin" onClick={() => setIsMenuOpen(false)} className="text-purple-600">Admin Panel</Link></li>}
+            <li><Link to="/profile" onClick={() => setIsMenuOpen(false)}>My Profile</Link></li>
+          </ul>
+
+          <div className="pt-6 border-t dark:border-gray-800">
+            {user ? (
+              <button 
+                onClick={handleLogout}
+                className="w-full py-4 bg-red-50 dark:bg-red-900/20 text-red-600 font-bold rounded-xl"
+              >
+                Logout Account
+              </button>
+            ) : (
+              <Link 
+                to="/login" 
+                onClick={() => setIsMenuOpen(false)}
+                className="block w-full py-4 bg-blue-600 text-white text-center font-bold rounded-xl"
+              >
+                Login / Sign Up
+              </Link>
             )}
           </div>
         </div>
-      </div>
+      )}
     </nav>
   );
 }
