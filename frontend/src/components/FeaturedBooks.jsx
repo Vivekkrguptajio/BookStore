@@ -23,26 +23,40 @@ function FeaturedBooks() {
     fetchBooks();
   }, []);
 
-  if (loading) return <div className="py-20 text-center text-xl dark:text-white">Loading popular picks...</div>;
+  if (loading) return (
+    <div className="py-20 text-center">
+      <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Curating masterpieces...</p>
+    </div>
+  );
 
   return (
-    <section className="py-12 md:py-20 bg-gray-50 dark:bg-gray-950 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 md:px-6">
+    <section className="py-20 md:py-32 bg-slate-50 dark:bg-[#050810] transition-colors relative overflow-hidden">
+      {/* Subtle Decor */}
+      <div className="absolute top-1/2 left-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl -translate-x-1/2"></div>
+      
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 md:mb-12 gap-4">
-          <div>
-            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 dark:text-white">Featured Books</h2>
-            <p className="text-gray-500 dark:text-gray-400 mt-2 text-sm md:text-lg">Handpicked selections from our experts</p>
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 md:mb-16 gap-6">
+          <div className="max-w-2xl">
+            <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
+              Curated <span className="premium-gradient-text">Masterpieces</span>
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-lg font-medium">
+              Handpicked selections from our literary experts, specifically for your sophisticated taste.
+            </p>
           </div>
-          <Link to="/books" className="flex items-center gap-2 text-blue-600 font-bold hover:underline">
-            Browse All <FaArrowRight size={14} />
+          <Link to="/books" className="flex items-center gap-3 bg-white dark:bg-slate-900 px-6 py-3 rounded-2xl font-bold text-blue-600 shadow-sm hover:shadow-md transition-all group">
+            Browse All <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        {/* Grid - 2 columns on mobile, 4 on desktop */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+        {/* Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
           {books.length === 0 ? (
-            <p className="col-span-full text-center text-gray-500 py-10">No books listed yet.</p>
+            <div className="col-span-full py-20 card-premium flex flex-col items-center justify-center text-center">
+               <p className="text-slate-400 font-bold uppercase tracking-widest">Our shelves are currently being restocked</p>
+            </div>
           ) : (
             books.map((book) => (
               <BookCard key={book._id} book={{ ...book, rating: book.rating || 4.5 }} />

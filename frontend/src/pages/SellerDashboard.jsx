@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaBook, FaShoppingCart, FaRupeeSign, FaUsers, FaTrash } from "react-icons/fa";
+import { FaBook, FaShoppingCart, FaRupeeSign, FaUsers, FaTrash, FaPlus, FaArrowLeft, FaSyncAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AddBook from "../components/AddBook";
@@ -59,7 +59,6 @@ function SellerDashboard() {
       await axios.delete(`${API_URL}/orders/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      alert("Order deleted successfully");
       handleRefresh();
     } catch (error) {
       console.error("Error deleting order:", error);
@@ -68,159 +67,137 @@ function SellerDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-10 transition-colors duration-300">
-      {/* Top Navbar */}
-      <div className="bg-white dark:bg-gray-900 shadow-sm border-b dark:border-gray-800 px-8 py-5 flex items-center justify-between sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-            <FaBook className="text-white text-xl" />
+    <div className="min-h-screen bg-slate-50 dark:bg-[#050810] pb-20 transition-colors duration-300">
+      {/* Top Header */}
+      <div className="glass-premium border-b dark:border-white/5 px-8 py-5 flex items-center justify-between sticky top-0 z-50">
+        <div className="flex items-center gap-4">
+          <button onClick={() => navigate("/")} className="p-3 bg-slate-100 dark:bg-slate-800 rounded-2xl hover:text-blue-600 transition-colors">
+            <FaArrowLeft />
+          </button>
+          <div className="flex items-center gap-3 border-l dark:border-white/5 pl-4">
+            <div className="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+              <FaBook className="text-white text-xl" />
+            </div>
+            <h1 className="text-2xl font-black tracking-tight dark:text-white">Seller <span className="text-blue-600">Hub</span></h1>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Seller Panel</h1>
         </div>
 
-        <div className="flex items-center gap-6">
-          <span className="text-gray-600 dark:text-gray-400 font-medium">
-            Welcome, {JSON.parse(localStorage.getItem("user"))?.name}
-          </span>
-          <button
-            onClick={handleLogout}
-            className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-6 py-2 rounded-xl font-semibold hover:bg-red-600 hover:text-white transition-all border border-red-100 dark:border-red-900/30"
-          >
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex flex-col items-end">
+             <span className="text-xs font-black uppercase tracking-widest text-slate-400">Store Manager</span>
+             <span className="font-bold dark:text-white">{JSON.parse(localStorage.getItem("user"))?.name}</span>
+          </div>
+          <button onClick={handleLogout} className="p-3 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-2xl transition-colors">
             Logout
           </button>
         </div>
       </div>
 
-      {/* Dashboard Content */}
-      <div className="max-w-7xl mx-auto p-8">
-        {/* Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Total Books */}
-          <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 dark:text-gray-400 font-medium">Total Books</p>
-                <h2 className="text-4xl font-bold mt-2 text-gray-800 dark:text-white">{stats.totalBooks}</h2>
-              </div>
-              <div className="w-14 h-14 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center">
-                <FaBook className="text-3xl text-blue-600" />
-              </div>
-            </div>
-          </div>
-
-          {/* Orders */}
-          <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 dark:text-gray-400 font-medium">Orders</p>
-                <h2 className="text-4xl font-bold mt-2 text-gray-800 dark:text-white">{stats.totalOrders}</h2>
-              </div>
-              <div className="w-14 h-14 bg-green-50 dark:bg-green-900/20 rounded-2xl flex items-center justify-center">
-                <FaShoppingCart className="text-3xl text-green-600" />
-              </div>
-            </div>
-          </div>
-
-          {/* Revenue */}
-          <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 dark:text-gray-400 font-medium">Revenue</p>
-                <h2 className="text-4xl font-bold mt-2 text-gray-800 dark:text-white">₹{stats.totalRevenue}</h2>
-              </div>
-              <div className="w-14 h-14 bg-yellow-50 dark:bg-yellow-900/20 rounded-2xl flex items-center justify-center">
-                <FaRupeeSign className="text-3xl text-yellow-500" />
-              </div>
-            </div>
-          </div>
-
-          {/* Customers */}
-          <div className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 hover:shadow-md transition">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-500 dark:text-gray-400 font-medium">Customers</p>
-                <h2 className="text-4xl font-bold mt-2 text-gray-800 dark:text-white">{stats.totalCustomers}</h2>
-              </div>
-              <div className="w-14 h-14 bg-purple-50 dark:bg-purple-900/20 rounded-2xl flex items-center justify-center">
-                <FaUsers className="text-3xl text-purple-600" />
-              </div>
-            </div>
-          </div>
+      <div className="max-w-7xl mx-auto p-6 md:p-12">
+        {/* Stats Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <SellerStatCard title="Total Books" value={stats.totalBooks} icon={<FaBook />} color="bg-blue-500" />
+          <SellerStatCard title="Orders" value={stats.totalOrders} icon={<FaShoppingCart />} color="bg-emerald-500" />
+          <SellerStatCard title="Revenue" value={`₹${stats.totalRevenue}`} icon={<FaRupeeSign />} color="bg-orange-500" />
+          <SellerStatCard title="Customers" value={stats.totalCustomers} icon={<FaUsers />} color="bg-purple-500" />
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-10 mt-10">
+        <div className="grid lg:grid-cols-3 gap-12 mb-12">
           <div className="lg:col-span-1">
-            <AddBook onBookAdded={handleRefresh} />
+             <div className="sticky top-32">
+                <AddBook onBookAdded={handleRefresh} />
+             </div>
           </div>
           <div className="lg:col-span-2">
-            <SellerBooks refreshTrigger={refreshTrigger} />
+            <div className="card-premium h-full">
+               <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Your Inventory</h2>
+                  <button onClick={handleRefresh} className="p-2 text-slate-400 hover:text-blue-600 transition-colors">
+                    <FaSyncAlt className={refreshTrigger ? "animate-spin" : ""} />
+                  </button>
+               </div>
+               <SellerBooks refreshTrigger={refreshTrigger} />
+            </div>
           </div>
         </div>
 
-        {/* Recent Orders */}
-        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 mt-10 p-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Recent Orders</h2>
+        {/* Recent Orders Table */}
+        <div className="card-premium">
+          <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center gap-4">
+               <div className="w-12 h-12 bg-blue-500/10 text-blue-600 rounded-2xl flex items-center justify-center">
+                  <FaShoppingCart size={24} />
+               </div>
+               <div>
+                 <h2 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Recent Sales</h2>
+                 <p className="text-sm text-slate-500 font-medium">Monitor your store's latest transactions</p>
+               </div>
+            </div>
             <button
               onClick={handleRefresh}
-              className="text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+              className="premium-btn-outline px-6 py-2 text-sm"
             >
-              Refresh
+              Refresh Orders
             </button>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="text-left border-b border-gray-100 dark:border-gray-800">
-                  <th className="pb-4 font-semibold text-gray-600 dark:text-gray-400">Order ID</th>
-                  <th className="pb-4 font-semibold text-gray-600 dark:text-gray-400">Customer</th>
-                  <th className="pb-4 font-semibold text-gray-600 dark:text-gray-400">Book</th>
-                  <th className="pb-4 font-semibold text-gray-600 dark:text-gray-400">Price</th>
-                  <th className="pb-4 font-semibold text-gray-600 dark:text-gray-400">Status</th>
-                  <th className="pb-4 font-semibold text-gray-600 dark:text-gray-400">Action</th>
+                <tr className="text-left border-b border-slate-100 dark:border-white/5">
+                  <th className="pb-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Order Ref</th>
+                  <th className="pb-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Customer</th>
+                  <th className="pb-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Earnings</th>
+                  <th className="pb-6 text-[10px] font-black uppercase tracking-widest text-slate-400">Status</th>
+                  <th className="pb-6 text-right text-[10px] font-black uppercase tracking-widest text-slate-400">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
+              <tbody className="divide-y divide-slate-50 dark:divide-white/5">
                 {orders.length === 0 ? (
                   <tr>
-                    <td colSpan="6" className="py-10 text-center text-gray-500">
-                      No orders yet.
+                    <td colSpan="5" className="py-20 text-center text-slate-400 font-bold uppercase tracking-widest text-xs">
+                      No sales yet
                     </td>
                   </tr>
                 ) : (
                   orders.map((order) => (
-                    <tr key={order._id} className="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
-                      <td className="py-4 font-mono text-sm text-gray-500 dark:text-gray-400">
-                        #{order._id.substring(0, 8)}
+                    <tr key={order._id} className="group hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+                      <td className="py-6 font-mono text-xs text-slate-400">
+                        #{order._id.substring(16, 24).toUpperCase()}
                       </td>
-                      <td className="py-4">
-                        <div className="font-semibold text-gray-800 dark:text-white">{order.user?.name}</div>
-                        <div className="text-xs text-gray-400">{order.user?.email}</div>
+                      <td className="py-6">
+                        <div className="flex items-center gap-3">
+                           <div className="w-8 h-8 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center text-xs font-bold text-slate-500">
+                              {order.user?.name.charAt(0)}
+                           </div>
+                           <div>
+                              <p className="font-bold text-slate-800 dark:text-white text-sm">{order.user?.name}</p>
+                              <p className="text-[10px] text-slate-500 font-medium">{order.user?.email}</p>
+                           </div>
+                        </div>
                       </td>
-                      <td className="py-4 text-gray-700 dark:text-gray-300">
-                        {order.orderItems.map((item) => item.book?.title).join(", ")}
+                      <td className="py-6">
+                        <span className="text-lg font-black dark:text-white">₹{order.totalPrice}</span>
                       </td>
-                      <td className="py-4 font-bold text-blue-600 dark:text-blue-400">₹{order.totalPrice}</td>
-                      <td className="py-4">
+                      <td className="py-6">
                         <span
-                          className={`px-4 py-1 rounded-full text-xs font-bold uppercase ${
+                          className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${
                             order.orderStatus === "delivered"
-                              ? "bg-green-100 text-green-700"
+                              ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600"
                               : order.orderStatus === "processing"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-yellow-100 text-yellow-700"
+                              ? "bg-blue-50 dark:bg-blue-500/10 text-blue-600"
+                              : "bg-orange-50 dark:bg-orange-500/10 text-orange-600"
                           }`}
                         >
                           {order.orderStatus}
                         </span>
                       </td>
-                      <td className="py-4">
+                      <td className="py-6 text-right">
                         <button 
                           onClick={() => handleDeleteOrder(order._id)}
-                          className="text-red-400 hover:text-red-600 p-2 bg-red-50 dark:bg-red-900/20 rounded-xl transition"
+                          className="w-10 h-10 flex items-center justify-center text-rose-500 opacity-0 group-hover:opacity-100 hover:bg-rose-50 dark:hover:bg-rose-500/20 rounded-2xl transition-all"
                         >
-                          <FaTrash size={16} />
+                          <FaTrash size={14} />
                         </button>
                       </td>
                     </tr>
@@ -235,4 +212,21 @@ function SellerDashboard() {
   );
 }
 
+function SellerStatCard({ title, value, icon, color }) {
+  return (
+    <div className="card-premium p-6 group hover:scale-[1.02] transition-all">
+      <div className="flex flex-col gap-6">
+        <div className={`w-14 h-14 rounded-3xl ${color} text-white flex items-center justify-center text-2xl shadow-xl transition-transform group-hover:rotate-12`}>
+          {icon}
+        </div>
+        <div>
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">{title}</p>
+          <h2 className="text-3xl font-black text-slate-900 dark:text-white">{value}</h2>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default SellerDashboard;
+

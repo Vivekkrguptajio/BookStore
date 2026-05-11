@@ -26,7 +26,13 @@ function Cart() {
       setCartItems(response.data.cart);
     } catch (error) {
       console.error("Error fetching cart:", error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/login");
+      }
     } finally {
+
       setLoading(false);
     }
   };

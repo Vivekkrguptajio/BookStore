@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaUser, FaEnvelope, FaTrash, FaEdit, FaCheck, FaTimes, FaShieldAlt } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaTrash, FaEdit, FaCheck, FaTimes, FaShieldAlt, FaCalendarAlt, FaCamera } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/Navbar";
@@ -38,7 +38,6 @@ function Profile() {
       localStorage.setItem("user", JSON.stringify(response.data.user));
       setUser(response.data.user);
       setIsEditing(false);
-      alert("Profile updated successfully!");
     } catch (error) {
       console.error("Update error:", error);
       alert(error.response?.data?.message || "Update failed");
@@ -58,7 +57,6 @@ function Profile() {
       await axios.delete(`${API_URL}/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      alert("Account deleted successfully");
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       navigate("/login");
@@ -71,113 +69,130 @@ function Profile() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col transition-colors duration-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#050810] flex flex-col transition-colors duration-300">
       <Navbar />
 
-      <main className="flex-grow max-w-4xl mx-auto px-8 py-16 w-full">
-        <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl overflow-hidden border dark:border-gray-800">
-          {/* Cover / Header */}
-          <div className="h-32 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+      <main className="flex-grow max-w-5xl mx-auto px-6 py-24 w-full">
+        <div className="card-premium overflow-hidden p-0 border-none shadow-2xl">
+          {/* Cover Header */}
+          <div className="h-48 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 relative">
+             <div className="absolute inset-0 bg-black/10"></div>
+          </div>
           
-          <div className="px-10 pb-10">
-            <div className="relative -mt-16 mb-6 flex items-end justify-between flex-wrap gap-6">
-              <div className="w-32 h-32 bg-white dark:bg-gray-800 rounded-2xl p-2 shadow-lg">
-                <div className="w-full h-full bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400">
-                  <FaUser className="text-5xl" />
+          <div className="px-8 md:px-12 pb-12">
+            <div className="relative -mt-20 mb-10 flex items-end justify-between flex-wrap gap-6">
+              <div className="relative group">
+                <div className="w-40 h-40 bg-white dark:bg-slate-900 rounded-[2.5rem] p-3 shadow-2xl relative z-10">
+                  <div className="w-full h-full bg-slate-100 dark:bg-slate-800 rounded-[2rem] flex items-center justify-center text-blue-600 dark:text-blue-400 overflow-hidden">
+                    <span className="text-6xl font-black">{user.name.charAt(0)}</span>
+                  </div>
                 </div>
+                <button className="absolute bottom-2 right-2 z-20 w-10 h-10 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-xl border-4 border-white dark:border-slate-900 group-hover:scale-110 transition-transform">
+                   <FaCamera size={14} />
+                </button>
               </div>
               
               {!isEditing && (
                 <button 
                   onClick={() => setIsEditing(true)}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700 transition shadow-lg shadow-blue-100 dark:shadow-none"
+                  className="premium-btn px-8 shadow-xl shadow-blue-500/20"
                 >
                   <FaEdit /> Edit Profile
                 </button>
               )}
             </div>
 
-            <div className="flex flex-col md:flex-row gap-12">
+            <div className="flex flex-col lg:flex-row gap-16">
               {/* Info Section */}
               <div className="flex-grow">
                 {isEditing ? (
-                  <form onSubmit={handleUpdate} className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-bold text-gray-400 uppercase mb-2">Full Name</label>
-                      <input 
-                        type="text" 
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        className="w-full bg-gray-50 dark:bg-gray-800 border-none rounded-xl px-5 py-3 dark:text-white outline-none focus:ring-2 focus:ring-blue-600 transition"
-                      />
+                  <form onSubmit={handleUpdate} className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <div className="grid md:grid-cols-2 gap-8">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
+                        <input 
+                          type="text" 
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          className="input-premium"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+                        <input 
+                          type="email" 
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          className="input-premium"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-bold text-gray-400 uppercase mb-2">Email Address</label>
-                      <input 
-                        type="email" 
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="w-full bg-gray-50 dark:bg-gray-800 border-none rounded-xl px-5 py-3 dark:text-white outline-none focus:ring-2 focus:ring-blue-600 transition"
-                      />
-                    </div>
-                    <div className="flex gap-4">
+                    
+                    <div className="flex gap-4 pt-4 border-t dark:border-white/5">
                       <button 
                         type="submit" 
                         disabled={loading}
-                        className="bg-green-600 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-green-700 transition"
+                        className="premium-btn px-10"
                       >
-                        <FaCheck /> {loading ? "Saving..." : "Save Changes"}
+                        <FaCheck /> {loading ? "Updating..." : "Save Changes"}
                       </button>
                       <button 
                         type="button" 
                         onClick={() => setIsEditing(false)}
-                        className="bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-300 dark:hover:bg-gray-600 transition"
+                        className="premium-btn-outline px-10"
                       >
                         <FaTimes /> Cancel
                       </button>
                     </div>
                   </form>
                 ) : (
-                  <div className="space-y-8">
+                  <div className="space-y-12 animate-in fade-in duration-700">
                     <div>
-                      <h1 className="text-4xl font-bold text-gray-800 dark:text-white mb-2">{user.name}</h1>
-                      <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold uppercase text-sm">
+                      <h1 className="text-5xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">{user.name}</h1>
+                      <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-black uppercase tracking-widest text-xs px-3 py-1.5 bg-blue-50 dark:bg-blue-500/10 w-fit rounded-full">
                         <FaShieldAlt /> {user.role} Account
                       </div>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 gap-8">
-                      <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border dark:border-gray-800">
-                        <p className="text-gray-400 text-xs font-bold uppercase mb-2">Email Address</p>
-                        <p className="text-lg font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-3">
-                          <FaEnvelope className="text-blue-600" /> {user.email}
-                        </p>
+                    <div className="grid sm:grid-cols-2 gap-6">
+                      <div className="bg-slate-50 dark:bg-slate-800/40 p-8 rounded-[2rem] border border-slate-100 dark:border-white/5 group hover:bg-white dark:hover:bg-slate-800 transition-all duration-300 shadow-sm hover:shadow-xl">
+                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-4">Contact Info</p>
+                        <div className="flex items-center gap-4">
+                           <div className="w-12 h-12 bg-blue-500/10 text-blue-600 rounded-2xl flex items-center justify-center">
+                              <FaEnvelope />
+                           </div>
+                           <p className="text-lg font-bold text-slate-800 dark:text-slate-200">{user.email}</p>
+                        </div>
                       </div>
-                      <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-2xl border dark:border-gray-800">
-                        <p className="text-gray-400 text-xs font-bold uppercase mb-2">Member Since</p>
-                        <p className="text-lg font-semibold text-gray-700 dark:text-gray-200">
-                          Recently Joined
-                        </p>
+                      
+                      <div className="bg-slate-50 dark:bg-slate-800/40 p-8 rounded-[2rem] border border-slate-100 dark:border-white/5 group hover:bg-white dark:hover:bg-slate-800 transition-all duration-300 shadow-sm hover:shadow-xl">
+                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-4">Membership</p>
+                        <div className="flex items-center gap-4">
+                           <div className="w-12 h-12 bg-emerald-500/10 text-emerald-600 rounded-2xl flex items-center justify-center">
+                              <FaCalendarAlt />
+                           </div>
+                           <p className="text-lg font-bold text-slate-800 dark:text-slate-200">Active Member</p>
+                        </div>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Danger Zone */}
-              <div className="md:w-72">
-                <div className="bg-red-50 dark:bg-red-900/10 p-8 rounded-3xl border border-red-100 dark:border-red-900/30">
-                  <h3 className="text-red-600 dark:text-red-400 font-bold mb-4 flex items-center gap-2">
-                    <FaTrash /> Danger Zone
+              {/* Sidebar / Danger Zone */}
+              <div className="lg:w-80">
+                <div className="bg-rose-50 dark:bg-rose-500/5 p-8 rounded-[2rem] border border-rose-100 dark:border-rose-500/10">
+                  <h3 className="text-rose-600 dark:text-rose-400 font-black mb-4 flex items-center gap-2 uppercase tracking-widest text-xs">
+                    <FaTrash /> Privacy & Security
                   </h3>
-                  <p className="text-sm text-red-500 mb-6">
-                    Once you delete your account, there is no going back. Please be certain.
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed font-medium">
+                    Deleting your account is permanent. All your data, orders, and listings will be removed forever.
                   </p>
                   <button 
                     onClick={handleDeleteAccount}
-                    className="w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition shadow-lg shadow-red-100 dark:shadow-none"
+                    className="w-full py-4 bg-white dark:bg-slate-900 text-rose-600 font-bold rounded-2xl border-2 border-rose-100 dark:border-rose-500/20 hover:bg-rose-600 hover:text-white transition-all shadow-lg shadow-rose-500/5"
                   >
                     Delete Account
                   </button>
@@ -194,3 +209,4 @@ function Profile() {
 }
 
 export default Profile;
+

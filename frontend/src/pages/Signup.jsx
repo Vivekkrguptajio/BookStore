@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaUser, FaEnvelope, FaLock, FaArrowRight } from "react-icons/fa";
 
 function Signup() {
   const navigate = useNavigate();
@@ -22,13 +23,10 @@ function Signup() {
     const API_URL = import.meta.env.VITE_API_URL;
 
     try {
-      const response = await axios.post(`${API_URL}/users/register`, {
+      await axios.post(`${API_URL}/users/register`, {
         ...formData,
         role: "user", // Default role
       });
-
-      console.log("Signup Success:", response.data);
-      alert("Account Created Successfully!");
       navigate("/login");
     } catch (error) {
       console.error("Signup Error:", error.response?.data);
@@ -39,72 +37,96 @@ function Signup() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-6 py-10">
-      <div className="bg-white shadow-2xl rounded-3xl p-10 w-full max-w-md">
-        <h1 className="text-4xl font-bold text-center text-blue-600 mb-3">Sign Up</h1>
-        <p className="text-center text-gray-500 mb-8">Join the BookStore community</p>
+    <div className="min-h-screen bg-slate-50 dark:bg-[#050810] flex items-center justify-center px-6 py-10 transition-colors duration-300 relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-0 w-full h-full -z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-600/5 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/5 rounded-full blur-[120px]"></div>
+      </div>
+
+      <div className="card-premium w-full max-w-md relative z-10 p-8 md:p-12 animate-in fade-in zoom-in duration-500">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-black text-slate-900 dark:text-white mb-3 tracking-tight">
+            Join the <span className="premium-gradient-text">Community</span>
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 font-medium">
+            Start your reading adventure today
+          </p>
+        </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label className="block mb-2 font-semibold">Full Name</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Enter your name"
-              className="w-full border border-gray-300 rounded-xl px-5 py-3 outline-none focus:border-blue-600"
-              required
-            />
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
+            <div className="relative group">
+              <FaUser className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="John Doe"
+                className="input-premium pl-12"
+                required
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="block mb-2 font-semibold">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              className="w-full border border-gray-300 rounded-xl px-5 py-3 outline-none focus:border-blue-600"
-              required
-            />
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Email Address</label>
+            <div className="relative group">
+              <FaEnvelope className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="name@example.com"
+                className="input-premium pl-12"
+                required
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="block mb-2 font-semibold">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Create a password"
-              className="w-full border border-gray-300 rounded-xl px-5 py-3 outline-none focus:border-blue-600"
-              required
-            />
+          <div className="space-y-2">
+            <label className="text-xs font-black uppercase tracking-widest text-slate-400 ml-1">Password</label>
+            <div className="relative group">
+              <FaLock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Min. 8 characters"
+                className="input-premium pl-12"
+                required
+              />
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className={`w-full ${loading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'} text-white py-4 rounded-xl text-lg font-semibold transition`}
+            className="premium-btn w-full shadow-xl shadow-blue-500/20 py-4 mt-4"
           >
-            {loading ? "Creating Account..." : "Sign Up"}
+            {loading ? "Creating Account..." : "Create Account"}
+            {!loading && <FaArrowRight className="text-sm" />}
           </button>
         </form>
 
-        <p className="text-center mt-6 text-gray-600">
-          Already have an account?
-          <Link to="/login" className="text-blue-600 font-semibold ml-2 hover:underline">
-            Login
-          </Link>
-        </p>
-
-        <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-            <p className="text-gray-500">Want to sell books?</p>
-            <Link to="/seller-register" className="text-blue-600 font-semibold hover:underline">
-                Become a Seller
+        <div className="mt-10 pt-8 border-t dark:border-white/5 text-center">
+          <p className="text-slate-600 dark:text-slate-400 font-medium">
+            Already have an account?
+            <Link to="/login" className="text-blue-600 dark:text-blue-400 font-bold ml-2 hover:underline">
+              Sign In
             </Link>
+          </p>
+        </div>
+
+        <div className="mt-6 flex flex-col items-center gap-2">
+          <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Want to sell books?</p>
+          <Link to="/seller-register" className="text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-blue-600 transition-colors">
+            Become a Seller
+          </Link>
         </div>
       </div>
     </div>
@@ -112,3 +134,4 @@ function Signup() {
 }
 
 export default Signup;
+
